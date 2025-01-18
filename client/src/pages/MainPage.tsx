@@ -1,16 +1,17 @@
 import React from "react";
 import { Box, Typography, TextField, Button, Paper } from "@mui/material";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
+import {
+  backgroundStyle,
+  blackBoxStyle,
+  goButtonStyle,
+  textFieldStyle,
+} from "../styles/commonStyles.ts";
 
 const MainPage: React.FC = () => {
   return (
-    <Box
-    // sx={blackBoxStyle}
-    >
-      <Paper
-        elevation={8}
-        // sx={blackBoxStyle}
-      >
+    <Box sx={backgroundStyle}>
+      <Paper elevation={8} sx={blackBoxStyle}>
         <Typography
           variant="h4"
           sx={{
@@ -34,13 +35,9 @@ const MainPage: React.FC = () => {
             variant="outlined"
             placeholder="Ask anything..."
             value={prompt}
-            // sx={textFieldStyle}
+            sx={textFieldStyle}
           />
-          <Button
-            variant="contained"
-            size="large"
-            // sx={goButtonStyle}
-          >
+          <Button variant="contained" size="large" sx={goButtonStyle}>
             <DoubleArrowIcon sx={{ color: "black" }} />
           </Button>
         </Box>
