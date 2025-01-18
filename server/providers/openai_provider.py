@@ -15,7 +15,7 @@ class OpenAIProvider:
                 {"role": "user", "content": f"Create an educational video script with an intuitive explainanation and your answer will be fed to an agent that generates manim script: {prompt}."}
             ],
             temperature=0.7,
-            max_tokens=500
+            max_tokens=15000
         )
         return response.choices[0].message.content.strip()
 
@@ -30,6 +30,6 @@ class OpenAIProvider:
                 {"role": "user", "content": f"Generate Manim code that will create a short video explaining the concepts for the following script BUT VERY IMPORTANT YOU DONT OUTPUT ANYTHING ELSE OTHER THAN THE PYTHON CODE you response will be copied by a python engine and run: {script}"}
             ],
             temperature=0.7,
-            max_tokens=500
+            max_tokens=15000
         )
         return response.choices[0].message.content.strip()

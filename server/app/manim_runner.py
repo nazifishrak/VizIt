@@ -1,71 +1,76 @@
-# app/manim_runner.py
-
 import subprocess
 import os
 import time
+import re
+from typing import Optional
 
-TEMP_DIR = "temp"    # Adjust to your liking
-VIDEOS_DIR = "videos"
+class ManimRenderError(Exception):
+    pass
 
-os.makedirs(TEMP_DIR, exist_ok=True)
-os.makedirs(VIDEOS_DIR, exist_ok=True)
+TEMP_DIR = os.path.join(os.path.dirname(__file__), "..", "temp")
+VIDEOS_DIR = os.path.join(os.path.dirname(__file__), "..", "videos")
 
-def run_manim_code(manim_code: str) -> str:
-    """
-    Write the Manim code to a temporary .py file,
-    run Manim, and return the path to the rendered video.
-    """
-    timestamp = int(time.time())
-    python_file_path = os.path.join(TEMP_DIR, f"animation_{timestamp}.py")
-    with open(python_file_path, "w", encoding="utf-8") as f:
-        f.write(manim_code)
+def _extract_scene_name(code: str) -> Optional[str]:
+    match = re.search(r"class\s+(\w+)\(Scene\):", code)
+    return match.group(1) if match else None
 
-    # We'll generate an output with -o (scene name must be consistent with your code).
-    # Adjust the scene name if you have a different Scene class name, e.g., MyScene.
-    scene_name = _extract_scene_name(manim_code) or "Scene"
+def _cleanup_temp_files(python_file: str) -> None:
+    if os.path.exists(python_file):
+        os.remove(python_file)
 
-    # Render video in the local "videos" folder
-    # The -o sets the output file name or directory. See Manim docs for details.
-    cmd = [
-        "manim",
-        python_file_path,
-        scene_name,
-        "-pql",
-        "--renderer=cairo",
-        "--media_dir", VIDEOS_DIR,  # place media in the "videos" directory
-    ]
+def run_manim_code(manim_code: str, cleanup: bool = False) -> str:
+    try:
+        # Create directories
+        os.makedirs(TEMP_DIR, exist_ok=True)
+        os.makedirs(VIDEOS_DIR, exist_ok=True)
 
-    print("Running command:", " ".join(cmd))
+        # Create temp file
+        timestamp = int(time.time())
+        python_file = os.path.join(TEMP_DIR, f"animation_{timestamp}.py")
+        with open(python_file, "w", encoding="utf-8") as f:
+            f.write(manim_code)
 
-    process = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    if process.returncode != 0:
-        raise RuntimeError(
-            f"Manim render failed: {process.stderr}"
+        # Extract scene name
+        scene_name = _extract_scene_name(manim_code)
+        if not scene_name:
+            raise ManimRenderError("Could not find Scene class in provided code")
+
+        # Build command to match terminal command
+        cmd = [
+            "manim",
+            "-pql",  # preview quality, low quality, same as terminal
+            "--media_dir", VIDEOS_DIR,
+            python_file,
+            scene_name
+        ]
+
+        print(f"Running Manim command: {' '.join(cmd)}")
+
+        # Add LaTeX path to environment
+        env = os.environ.copy()
+        env["PATH"] = "/Library/TeX/texbin:" + env.get("PATH", "")
+
+        # Run Manim
+        process = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True,
+            env=env
         )
 
-    # Look for .mp4 in the generated directory. Usually Manim places it in videos/<file_name>/1080p60/
-    # We'll attempt to parse from stdout or just guess from the standard Manim naming convention.
-    # Typical Manim path: videos/animation_YYYY-##-##/1080p60/MyScene.mp4
-    # You might do a deeper search in the folder for .mp4 if needed.
-    video_file_path = None
-    for line in process.stdout.splitlines():
-        if line.endswith(".mp4"):
-            # e.g. "File ready at: <some path>MyScene.mp4"
-            if "File ready at:" in line:
-                video_file_path = line.split("File ready at:")[-1].strip()
-                break
+        # Find video file (preview quality creates different path)
+        video_file = os.path.join(VIDEOS_DIR, "videos", "480p15", f"{scene_name}.mp4")
+        if not os.path.exists(video_file):
+            raise ManimRenderError("Video file not found after rendering")
 
-    if not video_file_path:
-        # fallback: guess from known manim structure
-        video_file_path = os.path.join(VIDEOS_DIR, f"1080p60/{scene_name}.mp4")
+        return video_file
 
-    return video_file_path
-
-def _extract_scene_name(manim_code: str) -> str:
-    """
-    Very naive approach to find `class MyScene(Scene):`
-    and extract "MyScene".
-    """
-    import re
-    match = re.search(r"class\s+(\w+)\(Scene\):", manim_code)
-    return match.group(1) if match else None
+    except subprocess.CalledProcessError as e:
+        raise ManimRenderError(f"Manim render failed:\n{e.stderr}")
+    
+    finally:
+        if cleanup:
+            # _cleanup_temp_files(python_file)
+            pass
