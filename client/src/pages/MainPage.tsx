@@ -51,10 +51,10 @@ const MainPage: React.FC = () => {
   }, [isLoading]);
 
   const stages = [
-    { label: "Preparing" },
-    { label: "Processing" },
-    { label: "Generating video" },
-    { label: "Finalizing..." },
+    { label: "Generating video animation" },
+    { label: "Generating audio script" },
+    { label: "Adding voice over" },
+    { label: "Finalizing your explanation" },
   ];
 
   const handleSubmit = async () => {
