@@ -63,31 +63,31 @@ export const textFieldStyle: CSSObject = {
   },
 };
 
-export const blackBoxStyle = (videoUrl: boolean): CSSObject => ({
+export const blackBoxStyle = (videoSrc: boolean): CSSObject => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   textAlign: "center",
-  paddingTop: videoUrl ? 0 : 4,
+  paddingTop: videoSrc ? 0 : 4,
   paddingLeft: 4,
   paddingRight: 4,
-  paddingBottom: videoUrl ? 0 : 4,
+  paddingBottom: videoSrc ? 0 : 4,
   backgroundColor: "#1e1e2f",
   borderRadius: 3,
   boxShadow: "0px 4px 20px rgba(0,0,0,0.8)",
   boxSizing: "border-box",
-  width: videoUrl ? "60%" : "auto",
-  height: videoUrl ? "100%" : "auto",
+  width: videoSrc ? "60%" : "auto",
+  height: videoSrc ? "100%" : "auto",
 });
 
-export const backgroundStyle = (videoUrl: boolean): CSSObject => ({
+export const backgroundStyle = (videoSrc: boolean): CSSObject => ({
   display: "flex",
   height: "100vh",
   background: "linear-gradient(135deg, #6a11cb, #2575fc, #1e3a8a)",
   backgroundSize: "300% 300%",
   animation: "moveBackground 20s infinite",
   alignItems: "center",
-  justifyContent: videoUrl ? "flex-start" : "center",
+  justifyContent: videoSrc ? "flex-start" : "center",
   "@keyframes moveBackground": {
     "0%": {
       backgroundPosition: "0% 50%",
