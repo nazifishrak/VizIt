@@ -31,6 +31,7 @@ import React, {
   forwardRef,
   useEffect,
 } from "react";
+import "@fontsource/montserrat/800.css";
 
 const MainPage: React.FC = () => {
   const [prompt, setPrompt] = useState<string>("");
@@ -143,26 +144,27 @@ const MainPage: React.FC = () => {
           <Typography
             variant="h1"
             sx={{
-              fontWeight: "bold",
+              fontWeight: 800,
+              fontFamily: "'Montserrat', sans-serif",
               color: "#ffffff",
               textShadow: "0px 2px 5px rgba(0, 0, 0, 0.5)",
-              fontSize: "12rem",
+              fontSize: "14rem",
               marginBottom: 2,
-              height: "12rem",
+              height: "14rem",
             }}
           >
             VIZ.IT
           </Typography>
           <Typography
-            variant="h5"
+            variant="h4"
             sx={{
-              marginBottom: 1,
+              marginBottom: 9,
               fontWeight: "bold",
               color: "#ffffff",
               textShadow: "0px 2px 5px rgba(0, 0, 0, 0.5)",
             }}
           >
-            Visual Learning
+            Visual Learning without Boundaries
           </Typography>
           <Button
             variant="contained"
@@ -179,7 +181,7 @@ const MainPage: React.FC = () => {
                 background:
                   "linear-gradient(135deg, #feb47b, #ff7e5f) !important",
               },
-              width: "40% !important",
+              width: "30% !important",
               margin: "0 auto",
             }}
           >
@@ -191,7 +193,8 @@ const MainPage: React.FC = () => {
         <Typography
           variant="h1"
           sx={{
-            fontWeight: "bold",
+            fontWeight: 800,
+            fontFamily: "'Montserrat', sans-serif",
             color: videoSrc ? "rgba(255, 255, 255, 0.3)" : "#ffffff",
             textShadow: "0px 2px 5px rgba(0, 0, 0, 0.5)",
             fontSize: videoSrc ? "2rem" : "3rem",
@@ -226,14 +229,14 @@ const MainPage: React.FC = () => {
           <Box sx={{ textAlign: "left" }}>
             <Typography
               sx={{
-                color: "rgba(255, 255, 255, 0.3)",
+                color: "rgba(255, 255, 255, 0.5)",
               }}
             >
               - I can generate a visualization and explanation in any language
             </Typography>
             <Typography
               sx={{
-                color: "rgba(255, 255, 255, 0.3)",
+                color: "rgba(255, 255, 255, 0.5)",
                 marginBottom: 1,
               }}
             >
@@ -321,6 +324,9 @@ const MainPage: React.FC = () => {
                         style={{
                           width: 35,
                           height: 35,
+                          backgroundColor: "transparent",
+                          color: "white",
+                          border: "none",
                         }}
                       >
                         <Player.PlayingIndicator asChild matcher={false}>
@@ -355,6 +361,9 @@ const MainPage: React.FC = () => {
                         style={{
                           width: 35,
                           height: 35,
+                          backgroundColor: "transparent",
+                          color: "white",
+                          border: "none",
                         }}
                       >
                         <Player.VolumeIndicator asChild matcher={false}>
