@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 from .config import settings
-from .utils import remove_markdown
+from .utils import remove_markdown, combine_video_and_audio
 from .manim_runner import run_manim_code
 from providers.openai_provider import OpenAIProvider
 from providers.gemini_provider import GeminiProvider
@@ -18,11 +18,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 settings = Settings()
-print(f"OPENAI_API_KEY: {os.getenv('OPENAI_API_KEY')}")
-print(f"GEMINI_API_KEY: {os.getenv('GEMINI_API_KEY')}")
-print(f"CLAUDE_API_KEY: {os.getenv('CLAUDE_API_KEY')}")
-print(f"LLM_PROVIDER: {os.getenv('LLM_PROVIDER')}")
-
 
 
 app = FastAPI()
@@ -40,9 +35,14 @@ app.add_middleware(
 
 # Mount videos directory
 app.mount("/videos", StaticFiles(directory=VIDEOS_DIR), name="videos")
+
+
 class GenerateRequest(BaseModel):
     question: str
-    provider: str = None  # 'openai' or 'gemini'; optional if you want to override default
+    provider: str = (
+        None  # 'openai' or 'gemini'; optional if you want to override default
+    )
+
 
 @app.post("/generate")
 def generate_video(req: GenerateRequest):
@@ -57,8 +57,8 @@ def generate_video(req: GenerateRequest):
     """
     try:
         provider = req.provider or settings.LLM_PROVIDER
-        cl_api=settings.CLAUDE_API_KEY
-        claude_prov=ClaudeProvider(cl_api)
+        cl_api = settings.CLAUDE_API_KEY
+        claude_prov = ClaudeProvider(cl_api)
         print(f"Provider: {provider}")
 
         if provider == "openai":
@@ -74,7 +74,9 @@ def generate_video(req: GenerateRequest):
                 raise HTTPException(status_code=400, detail="Gemini API key not set.")
             llm_provider = GeminiProvider(api_key)
         else:
-            raise HTTPException(status_code=400, detail=f"Unsupported provider: {provider}")
+            raise HTTPException(
+                status_code=400, detail=f"Unsupported provider: {provider}"
+            )
 
         # 1) Generate the script
         script = llm_provider.generate_script(req.question)
@@ -87,7 +89,22 @@ def generate_video(req: GenerateRequest):
         manim_code_clean = remove_markdown(manim_code_raw)
 
         # 4) Run Manim
-        video_path = run_manim_code(manim_code_clean)
+        video_file_name, video_path = run_manim_code(manim_code_clean)
+
+        # 5) Generate voice over script
+        voice_over_script = llm_provider.generate_voice_over_script(manim_code_clean)
+
+        # 5) Generate voiceover
+        voiceover_path = llm_provider.generate_voice_over(voice_over_script)
+
+        # 6) Combine video and voiceover
+
+        if not os.path.exists("videos/final"):
+            os.makedirs("videos/final")
+
+        combine_video_and_audio(
+            f"videos{video_path}", voiceover_path, f"videos/final/{video_file_name}.mp4"
+        )
 
         # if not video_path or not os.path.exists(video_path):
         #     raise HTTPException(status_code=500, detail="Video not found after rendering.")
@@ -97,7 +114,7 @@ def generate_video(req: GenerateRequest):
             "question": req.question,
             "script": script,
             "manim_code": manim_code_clean,
-            "video_path": video_path
+            "video_path": "final/{video_file_name}.mp4",
         }
 
     except Exception as e:
