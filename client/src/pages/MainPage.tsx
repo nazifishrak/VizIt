@@ -29,6 +29,9 @@ const MainPage: React.FC = () => {
   const [videoSrc, setVideoSrc] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingStage, setLoadingStage] = useState<number>(1);
+  const [videoHistory, setVideoHistory] = useState<
+    { src: string; prompt: string }[]
+  >([]);
 
   useEffect(() => {
     let interval: number | null = null;
@@ -100,6 +103,8 @@ const MainPage: React.FC = () => {
       };
 
       setVideoSrc(vodSource);
+      const videoUrl = `http://localhost:8000/videos/${videoPath}`;
+      setVideoHistory((prev) => [...prev, { src: videoUrl, prompt: prompt }]); // Add to history
     } catch (error) {
       console.error("Error:", error);
       alert("Failed to load the video. Please try again.");
@@ -148,7 +153,7 @@ const MainPage: React.FC = () => {
           </Button>
         </Box>
         {videoSrc && !isLoading ? (
-          <Player.Root src={getSrc(videoSrc)}>
+          <Player.Root key={JSON.stringify(videoSrc)} src={getSrc(videoSrc)}>
             <Player.Container
               style={{
                 height: "100%",
@@ -324,22 +329,33 @@ const MainPage: React.FC = () => {
                   {loadingStage > index + 1 ? (
                     <CheckCircleIcon
                       sx={{
-                        color: "#0aa363",
+                        color: "#03A9F4",
                         fontSize: 32,
                         zIndex: 1,
-                        boxShadow: "0 0 10px rgba(76, 175, 80, 0.5)",
                         borderRadius: "50%",
                       }}
                     />
                   ) : loadingStage === index + 1 ? (
                     <CircularProgress size={24} sx={{ color: "#03A9F4" }} />
                   ) : (
-                    <CircularProgress
-                      size={24}
-                      sx={{ color: "rgba(255, 255, 255, 0.3)" }}
-                      variant="determinate"
-                      value={0}
-                    />
+                    <>
+                      <CircularProgress
+                        size={24}
+                        sx={{ color: "rgba(255, 255, 255, 0.3)" }}
+                        variant="determinate"
+                        value={0}
+                      />
+                      <Box
+                        sx={{
+                          width: 10,
+                          height: 10,
+                          marginLeft: 1,
+                          backgroundColor: "rgba(255, 255, 255, 0.3)",
+                          borderRadius: "50%",
+                          position: "absolute",
+                        }}
+                      />
+                    </>
                   )}
                   <Typography
                     sx={{
@@ -360,7 +376,7 @@ const MainPage: React.FC = () => {
                 sx={{
                   position: "relative",
                   height: "8px",
-                  width: "80%",
+                  width: "100%",
                   borderRadius: "4px",
                   background: "rgba(255, 255, 255, 0.2)",
                   overflow: "hidden",
@@ -380,6 +396,88 @@ const MainPage: React.FC = () => {
           )
         )}
       </Paper>
+      {videoSrc && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            boxSizing: "border-box",
+            width: "40%",
+            padding: 6,
+            height: "100%",
+            overflowY: "auto",
+            gap: 3,
+            borderRadius: 3,
+            boxShadow: "0px 4px 8px rgba(0,0,0,0.3)",
+          }}
+        >
+          {[...videoHistory]
+            .slice()
+            .reverse()
+            .map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  background: "#000",
+                  borderRadius: 6,
+                  overflow: "hidden",
+                  boxShadow: "0px 4px 8px rgba(0,0,0,0.3)",
+                  position: "relative",
+                  cursor: "pointer",
+                  width: "100%",
+                  "&:hover": {
+                    boxShadow: "0px 6px 12px rgba(0,0,0,0.5)",
+                  },
+                }}
+                onClick={() => {
+                  const vodSource = {
+                    type: "vod",
+                    meta: {
+                      playbackPolicy: null,
+                      source: [
+                        {
+                          hrn: "Generated Video",
+                          type: "video/mp4",
+                          url: `${item.src}`,
+                        },
+                      ],
+                    },
+                  };
+                  setVideoSrc(vodSource);
+                  setPrompt(item.prompt);
+                }}
+              >
+                {/* Display the prompt */}
+                <Typography
+                  variant="h6"
+                  sx={{
+                    margin: 2,
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  {item.prompt}
+                </Typography>
+
+                {/* Video preview */}
+                <video
+                  src={item.src}
+                  muted
+                  loop
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.play()}
+                  onMouseLeave={(e) => e.currentTarget.pause()}
+                />
+              </Box>
+            ))}
+        </Box>
+      )}
     </Box>
   );
 };
