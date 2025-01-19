@@ -70,7 +70,7 @@ const MainPage: React.FC = () => {
     { label: "Generating video animation" },
     { label: "Generating audio script" },
     { label: "Adding voice over" },
-    { label: "Finalizing your explanation" },
+    { label: "Finalizing your visualization" },
   ];
 
   const handleSubmit = async () => {
@@ -225,7 +225,9 @@ const MainPage: React.FC = () => {
             }}
           >
             What would you like to get explained?
+            
           </Typography>
+          {!videoSrc &&(
           <Box sx={{ textAlign: "left" }}>
             <Typography
               sx={{
@@ -244,6 +246,7 @@ const MainPage: React.FC = () => {
               in Spanish"
             </Typography>
           </Box>
+          )}
           <Box
             sx={{
               display: "flex",

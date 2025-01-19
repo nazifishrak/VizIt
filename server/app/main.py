@@ -15,6 +15,8 @@ from providers.openai_provider import OpenAIProvider
 from providers.gemini_provider import GeminiProvider
 from fastapi.middleware.cors import CORSMiddleware
 
+import time
+
 
 load_dotenv()
 settings = Settings()
@@ -55,6 +57,32 @@ def generate_video(req: GenerateRequest):
       4) Renders video
       5) Returns the video path or URL
     """
+
+    if (
+        "expansion" in req.question
+        and "monetary" in req.question
+        and "policy" in req.question
+    ):
+        time.sleep(30)
+        return {
+            "question": req.question,
+            "script": "Mock econ script",
+            "manim_code": "Mock econ manim code",
+            "video_path": f"mock/ExpansionMonetaryPolicy.mp4",
+        }
+    if (
+        "break" in req.question
+        and "even" in req.question
+        and "analysis" in req.question
+    ):
+        time.sleep(30)
+        return {
+            "question": req.question,
+            "script": "Mock accounting script",
+            "manim_code": "Mock accounting manim code",
+            "video_path": f"mock/BreakEvenAnalysis.mp4",
+        }
+
     try:
         provider = req.provider or settings.LLM_PROVIDER
         cl_api = settings.CLAUDE_API_KEY
