@@ -73,7 +73,7 @@ export const blackBoxStyle = (videoSrc: boolean): CSSObject => ({
   paddingRight: 4,
   paddingBottom: videoSrc ? 0 : 4,
   backgroundColor: "#1e1e2f",
-  borderRadius: 3,
+  borderRadius: videoSrc ? 0 : 3,
   boxShadow: "0px 4px 20px rgba(0,0,0,0.8)",
   boxSizing: "border-box",
   width: videoSrc ? "60%" : "auto",
