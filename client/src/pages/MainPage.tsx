@@ -195,13 +195,13 @@ const MainPage: React.FC = () => {
           sx={{
             fontWeight: 800,
             fontFamily: "'Montserrat', sans-serif",
-            color: videoSrc ? "rgba(255, 255, 255, 0.3)" : "#ffffff",
+            color: videoSrc ? "#1765c0" : "#ffffff",
             textShadow: "0px 2px 5px rgba(0, 0, 0, 0.5)",
             fontSize: videoSrc ? "2rem" : "3rem",
             marginBottom: 2,
             position: "absolute",
             top: "16px",
-            left: "16px",
+            left: "40px",
           }}
         >
           VIZ.IT
@@ -456,7 +456,7 @@ const MainPage: React.FC = () => {
                       <CheckCircleIcon
                         sx={{
                           color: "#feb47b",
-                          fontSize: 32,
+                          fontSize: 28,
                           zIndex: 1,
                           borderRadius: "50%",
                         }}
@@ -530,7 +530,10 @@ const MainPage: React.FC = () => {
             flexDirection: "column",
             boxSizing: "border-box",
             width: "40%",
-            padding: 6,
+            paddingLeft: 6,
+            paddingTop: 2,
+            paddingBottom: 6,
+            paddingRight: 6,
             height: "100%",
             overflowY: "auto",
             gap: 3,
@@ -545,6 +548,8 @@ const MainPage: React.FC = () => {
             <Typography
               variant="h1"
               sx={{
+                fontWeight: 800,
+                fontFamily: "'Montserrat', sans-serif",
                 color: "#ffffff",
                 fontSize: "2rem",
                 marginBottom: 2,
@@ -552,7 +557,7 @@ const MainPage: React.FC = () => {
                 width: "100%",
               }}
             >
-              History
+              HISTORY
             </Typography>
           </Box>
           {[...videoHistory]
