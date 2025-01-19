@@ -79,11 +79,12 @@ def generate_video(req: GenerateRequest):
             )
 
         # 1) Generate the script
-        script = llm_provider.generate_script(req.question)
+        # script = llm_provider.generate_script(req.question)
 
         # 2) Generate Manim code from the script
         # manim_code_raw = llm_provider.generate_manim_code(script)
-        manim_code_raw = claude_prov.generate_manim_code(script)
+        manim_code_raw = claude_prov.generate_manim_code(req.question)
+        # manim_code_raw = claude_prov.generate_manim_code(script)
 
         # 3) Clean the code to remove markdown
         manim_code_clean = remove_markdown(manim_code_raw)
@@ -112,7 +113,7 @@ def generate_video(req: GenerateRequest):
         # Return a local path or you might want to create a publicly accessible URL
         return {
             "question": req.question,
-            "script": script,
+            "script": req.question, # change to script
             "manim_code": manim_code_clean,
             "video_path": f"final/{video_file_name}.mp4",
         }
