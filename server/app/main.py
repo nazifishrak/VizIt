@@ -114,7 +114,7 @@ def generate_video(req: GenerateRequest):
             "question": req.question,
             "script": script,
             "manim_code": manim_code_clean,
-            "video_path": "final/{video_file_name}.mp4",
+            "video_path": f"final/{video_file_name}.mp4",
         }
 
     except Exception as e:

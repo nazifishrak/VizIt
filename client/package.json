@@ -8,6 +8,8 @@
     "@livepeer/react": "^4.2.9",
     "@mui/icons-material": "^6.4.0",
     "@mui/material": "^6.4.0",
+    "ajv": "^6.12.6",
+    "ajv-keywords": "^3.5.2",
     "clsx": "^2.1.1",
     "cra-template": "1.2.0",
     "livepeer": "^3.5.0",
@@ -43,6 +45,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "typescript": "^5.7.3"
   }
 }
