@@ -12,6 +12,8 @@ from .utils import remove_markdown
 from .manim_runner import run_manim_code
 from providers.openai_provider import OpenAIProvider
 from providers.gemini_provider import GeminiProvider
+from fastapi.middleware.cors import CORSMiddleware
+
 
 load_dotenv()
 settings = Settings()
@@ -19,9 +21,20 @@ print(f"OPENAI_API_KEY: {os.getenv('OPENAI_API_KEY')}")
 print(f"GEMINI_API_KEY: {os.getenv('GEMINI_API_KEY')}")
 print(f"LLM_PROVIDER: {os.getenv('LLM_PROVIDER')}")
 
+
+
 app = FastAPI()
 # Get absolute path to videos directory
 VIDEOS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "videos"))
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with specific domains if needed
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all HTTP headers
+)
 
 # Mount videos directory
 app.mount("/videos", StaticFiles(directory=VIDEOS_DIR), name="videos")
