@@ -38,7 +38,7 @@ def run_manim_code(manim_code: str, cleanup: bool = False) -> str:
         # Build command to match terminal command
         cmd = [
             "manim",
-            "-pql",  # preview quality, low quality, same as terminal
+            "-ql",  # preview quality, low quality, same as terminal
             "--media_dir", VIDEOS_DIR,
             python_file,
             scene_name

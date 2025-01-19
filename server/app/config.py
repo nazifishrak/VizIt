@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     # Possible environment variables
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    CLAUDE_API_KEY: str = os.getenv("CLAUDE_API_KEY","")
     # Default to "openai" if not set
     LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "openai")
 

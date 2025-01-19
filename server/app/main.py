@@ -3,6 +3,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from providers.claude_provider import ClaudeProvider
 from .config import Settings
 from fastapi.staticfiles import StaticFiles
 import os
@@ -17,6 +18,7 @@ load_dotenv()
 settings = Settings()
 print(f"OPENAI_API_KEY: {os.getenv('OPENAI_API_KEY')}")
 print(f"GEMINI_API_KEY: {os.getenv('GEMINI_API_KEY')}")
+print(f"CLAUDE_API_KEY: {os.getenv('CLAUDE_API_KEY')}")
 print(f"LLM_PROVIDER: {os.getenv('LLM_PROVIDER')}")
 
 app = FastAPI()
@@ -42,6 +44,8 @@ def generate_video(req: GenerateRequest):
     """
     try:
         provider = req.provider or settings.LLM_PROVIDER
+        cl_api=settings.CLAUDE_API_KEY
+        claude_prov=ClaudeProvider(cl_api)
         print(f"Provider: {provider}")
 
         if provider == "openai":
@@ -63,7 +67,8 @@ def generate_video(req: GenerateRequest):
         script = llm_provider.generate_script(req.question)
 
         # 2) Generate Manim code from the script
-        manim_code_raw = llm_provider.generate_manim_code(script)
+        # manim_code_raw = llm_provider.generate_manim_code(script)
+        manim_code_raw = claude_prov.generate_manim_code(script)
 
         # 3) Clean the code to remove markdown
         manim_code_clean = remove_markdown(manim_code_raw)
