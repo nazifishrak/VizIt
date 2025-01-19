@@ -156,13 +156,13 @@ const MainPage: React.FC = () => {
           <Typography
             variant="h5"
             sx={{
-              marginBottom: 1,
+              marginBottom: 9,
               fontWeight: "bold",
               color: "#ffffff",
               textShadow: "0px 2px 5px rgba(0, 0, 0, 0.5)",
             }}
           >
-            Visual Learning
+            Visual Learning without Boundaries
           </Typography>
           <Button
             variant="contained"
@@ -226,14 +226,14 @@ const MainPage: React.FC = () => {
           <Box sx={{ textAlign: "left" }}>
             <Typography
               sx={{
-                color: "rgba(255, 255, 255, 0.3)",
+                color: "rgba(255, 255, 255, 0.5)",
               }}
             >
               - I can generate a visualization and explanation in any language
             </Typography>
             <Typography
               sx={{
-                color: "rgba(255, 255, 255, 0.3)",
+                color: "rgba(255, 255, 255, 0.5)",
                 marginBottom: 1,
               }}
             >
@@ -321,6 +321,9 @@ const MainPage: React.FC = () => {
                         style={{
                           width: 35,
                           height: 35,
+                          backgroundColor: "transparent",
+                          color: "white",
+                          border: "none",
                         }}
                       >
                         <Player.PlayingIndicator asChild matcher={false}>
@@ -355,6 +358,9 @@ const MainPage: React.FC = () => {
                         style={{
                           width: 35,
                           height: 35,
+                          backgroundColor: "transparent",
+                          color: "white",
+                          border: "none",
                         }}
                       >
                         <Player.VolumeIndicator asChild matcher={false}>
