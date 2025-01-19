@@ -27,7 +27,7 @@ class OpenAIProvider:
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are a expert at manim the python package."},
-                {"role": "user", "content": f"Generate Manim code that will create a short video explaining the concepts for the following script BUT VERY IMPORTANT YOU DONT OUTPUT ANYTHING ELSE OTHER THAN THE PYTHON CODE you response will be copied by a python engine and run: {script}"}
+                {"role": "user", "content": f"Generate Manim code that will create a short video explaining the concepts for the following script BUT VERY IMPORTANT YOU DONT OUTPUT ANYTHING ELSE OTHER THAN THE PYTHON CODE you response will be copied by a python engine and run ALSO DONY USE anything like SVGMobject or any sort of files OR ANY EXTERNAL RESOURCES like musics or image files SHOULD *NOT* BE USED: {script}"}
             ],
             temperature=0.7,
             max_tokens=15000

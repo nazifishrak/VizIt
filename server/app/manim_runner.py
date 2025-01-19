@@ -59,13 +59,25 @@ def run_manim_code(manim_code: str, cleanup: bool = False) -> str:
             check=True,
             env=env
         )
+# OLD WORKING ABSOLUTE
+        # # Find video file (preview quality creates different path)
+        # video_file = os.path.join(VIDEOS_DIR, "videos",f"animation_{timestamp}", "480p15", f"{scene_name}.mp4")
+        # # if not os.path.exists(video_file):
+        # #     raise ManimRenderError("Video file not found after rendering")
 
-        # Find video file (preview quality creates different path)
-        video_file = os.path.join(VIDEOS_DIR, "videos", "480p15", f"{scene_name}.mp4")
-        if not os.path.exists(video_file):
+        # return video_file
+# ***************************************
+
+        abs_video_path = os.path.join(VIDEOS_DIR, "videos", f"animation_{timestamp}", "480p15", f"{scene_name}.mp4")
+        
+        # Convert to URL path
+        relative_path = f"/videos/animation_{timestamp}/480p15/{scene_name}.mp4"
+        
+        if not os.path.exists(abs_video_path):
             raise ManimRenderError("Video file not found after rendering")
 
-        return video_file
+        return relative_path
+
 
     except subprocess.CalledProcessError as e:
         raise ManimRenderError(f"Manim render failed:\n{e.stderr}")
@@ -74,3 +86,5 @@ def run_manim_code(manim_code: str, cleanup: bool = False) -> str:
         if cleanup:
             # _cleanup_temp_files(python_file)
             pass
+
+

@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from .config import Settings
+from fastapi.staticfiles import StaticFiles
 import os
 
 from .config import settings
@@ -19,7 +20,11 @@ print(f"GEMINI_API_KEY: {os.getenv('GEMINI_API_KEY')}")
 print(f"LLM_PROVIDER: {os.getenv('LLM_PROVIDER')}")
 
 app = FastAPI()
+# Get absolute path to videos directory
+VIDEOS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "videos"))
 
+# Mount videos directory
+app.mount("/videos", StaticFiles(directory=VIDEOS_DIR), name="videos")
 class GenerateRequest(BaseModel):
     question: str
     provider: str = None  # 'openai' or 'gemini'; optional if you want to override default
@@ -66,8 +71,8 @@ def generate_video(req: GenerateRequest):
         # 4) Run Manim
         video_path = run_manim_code(manim_code_clean)
 
-        if not video_path or not os.path.exists(video_path):
-            raise HTTPException(status_code=500, detail="Video not found after rendering.")
+        # if not video_path or not os.path.exists(video_path):
+        #     raise HTTPException(status_code=500, detail="Video not found after rendering.")
 
         # Return a local path or you might want to create a publicly accessible URL
         return {
