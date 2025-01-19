@@ -48,10 +48,10 @@ const MainPage: React.FC = () => {
   }, [isLoading]);
 
   const stages = [
-    { label: "Preparing" },
-    { label: "Processing" },
-    { label: "Generating video" },
-    { label: "Finalizing..." },
+    { label: "Generating video animation" },
+    { label: "Generating audio script" },
+    { label: "Adding voice over" },
+    { label: "Finalizing your explanation" },
   ];
 
   const handleSubmit = async () => {
@@ -336,7 +336,7 @@ const MainPage: React.FC = () => {
                   ) : (
                     <CircularProgress
                       size={24}
-                      sx={{ color: "rgba(255, 255, 255, 0.3)" }}
+                      sx={{ color: "rgba(255, 255, 255, 0.3)",}}
                       variant="determinate"
                       value={0}
                     />

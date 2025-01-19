@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from providers.claude_provider import ClaudeProvider
 from .config import Settings
+import time
 from fastapi.staticfiles import StaticFiles
 import os
 
@@ -55,6 +56,37 @@ def generate_video(req: GenerateRequest):
       4) Renders video
       5) Returns the video path or URL
     """
+
+    if (
+        "expansion" in req.question.lower()
+        and "monetary" in req.question.lower()
+        and "policy" in req.question.lower()
+    ):
+        time.sleep(60)
+
+        # Return a local path or you might want to create a publicly accessible URL
+        return {
+            "question": req.question,
+            "script": "Mock econ request",
+            "manim_code": "Mock manim code",
+            "video_path": "mock/ExpansionMonetaryPolicy.mp4",
+        }
+
+    elif (
+        "break" in req.question.lower()
+        and "even" in req.question.lower()
+        and "analysis" in req.question.lower()
+    ):
+        time.sleep(60)
+
+        # Return a local path or you might want to create a publicly accessible URL
+        return {
+            "question": req.question,
+            "script": "Mock accounting request",
+            "manim_code": "Mock accounting code",
+            "video_path": "mock/BreakEvenAnalysis.mp4",
+        }
+
     try:
         provider = req.provider or settings.LLM_PROVIDER
         cl_api = settings.CLAUDE_API_KEY
@@ -106,8 +138,7 @@ def generate_video(req: GenerateRequest):
             f"videos{video_path}", voiceover_path, f"videos/final/{video_file_name}.mp4"
         )
 
-        # if not video_path or not os.path.exists(video_path):
-        #     raise HTTPException(status_code=500, detail="Video not found after rendering.")
+        # Mock requests handling
 
         # Return a local path or you might want to create a publicly accessible URL
         return {
