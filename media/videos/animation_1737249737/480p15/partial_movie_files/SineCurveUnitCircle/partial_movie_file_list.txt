@@ -1,3 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/Users/nazif/Downloads/nwHacks25/media/videos/animation_1737249737/480p15/partial_movie_files/SineCurveUnitCircle/1185818338_54962209_3360283128.mp4'
-file 'file:/Users/nazif/Downloads/nwHacks25/media/videos/animation_1737249737/480p15/partial_movie_files/SineCurveUnitCircle/624642324_1122450819_684591899.mp4'

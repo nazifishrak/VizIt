@@ -60,7 +60,7 @@ def combine_video_and_audio(
             "-c:v",
             "copy",
             "-filter:a",
-            "atempo=1.25",  # Adjust audio speed by 1.25x
+            "atempo=0.9",  # Adjust audio speed by 1.25x
             "-c:a",
             "aac",
             "-strict",

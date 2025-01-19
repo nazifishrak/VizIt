@@ -15,7 +15,7 @@ class ClaudeProvider:
                 model=self.model,
                 messages=[{
                     "role": "user",
-                    "content": f"Create an educational video script with an intuitive explanation of the concepts, write the script in a way so that in can be animated with manim and your answer will be fed to an agent that generates manim script: {prompt}."
+                    "content": f"Create an educational video script with an intuitive explanation and your answer will be fed to an agent that generates manim script: {prompt}."
                 }],
                 temperature=0.7,
                 max_tokens=4096  # Sonnet has lower token limit
@@ -33,38 +33,7 @@ class ClaudeProvider:
                 model=self.model,
                 messages=[{
                     "role": "user",
-                    "content": f"""
-Create a Manim animation video (v0.18.1) with these requirements:
-
-TECHNICAL REQUIREMENTS:
-1. Import only 'from manim import *'
-2. No external resources (SVG, images, music, etc.)
-3. Use only built-in Manim objects and animations
-4. No additional Python packages
-
-ANIMATION GUIDELINES:
-1. Set appropriate animation durations (self.wait(1.5) between transitions)
-2. Clear screen smoothly between sections make sure not to overlay texts unintentionally
-3. Keep content within screen bounds
-4. Use consistent scaling for objects
-5. Add smooth transitions between scenes
-
-REQUIRED FEATURES:
-1. Use Scene or ThreeDScene class
-2. Include descriptive titles in the appropriate space
-3. Show mathematical concepts step by step
-4. Use appropriate colors and layouts
-
-ERROR PREVENTION:
-1. Use get_riemann_rectangles() instead of get_area()
-2. Check object positions before animations
-3. Include proper cleanup between scenes
-
-Create an educational animation for this topic:
-{script}
-
-OUTPUT ONLY THE PYTHON CODE.
-"""
+                    "content": f"Generate Manim code that will create a short video explaining the concepts for the following script BUT VERY IMPORTANT YOU DONT OUTPUT ANYTHING ELSE OTHER THAN THE PYTHON CODE you response will be copied by a python engine and run ALSO DONY USE anything like SVGMobject or any sort of files OR ANY EXTERNAL RESOURCES like musics or image files SHOULD *NOT* BE USED. Also note, make sure everything fits within the screen and doesnt go out and secondly also dont clutter the screen while transitioning flush the old stuff in a reasonable way so that it looks perfectly made, just the video no sound nothing even if the screen says about music or anything dont add music HERE IS THE script: {script}"
                 }],
                 temperature=0.7,
                 max_tokens=4096
