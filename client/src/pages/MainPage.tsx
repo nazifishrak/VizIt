@@ -1,5 +1,7 @@
 import { Box, Typography, TextField, Button, Paper } from "@mui/material";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   backgroundStyle,
   blackBoxStyle,
@@ -15,12 +17,42 @@ import {
   PlayIcon,
   UnmuteIcon,
 } from "@livepeer/react/assets";
-import React, { useState, type PropsWithChildren, forwardRef } from "react";
+import React, {
+  useState,
+  type PropsWithChildren,
+  forwardRef,
+  useEffect,
+} from "react";
 
 const MainPage: React.FC = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [videoSrc, setVideoSrc] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadingStage, setLoadingStage] = useState<number>(1);
+
+  useEffect(() => {
+    let interval: number | null = null;
+
+    if (isLoading) {
+      interval = setInterval(() => {
+        setLoadingStage((prevStage) => (prevStage === 4 ? 1 : prevStage + 1));
+      }, 15000); // Each stage lasts 15 seconds
+    }
+
+    // Clear the interval when loading stops
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isLoading]);
+
+  const stages = [
+    { label: "Preparing" },
+    { label: "Processing" },
+    { label: "Generating video" },
+    { label: "Finalizing..." },
+  ];
 
   const handleSubmit = async () => {
     if (!prompt.trim()) {
@@ -31,7 +63,6 @@ const MainPage: React.FC = () => {
     try {
       setIsLoading(true);
 
-      // Send POST request to the API endpoint
       const response = await fetch("http://127.0.0.1:8000/generate", {
         method: "POST",
         headers: {
@@ -39,7 +70,7 @@ const MainPage: React.FC = () => {
         },
         body: JSON.stringify({
           question: prompt,
-          provider: "openai", // Use the provider as per your backend configuration
+          provider: "openai",
         }),
       });
 
@@ -48,15 +79,12 @@ const MainPage: React.FC = () => {
       }
 
       const data = await response.json();
-
-      // Use the video path from the response
       const videoPath = data.video_path;
 
       if (!videoPath) {
         throw new Error("Video path not found in the response.");
       }
 
-      // Update the video source
       const vodSource = {
         type: "vod",
         meta: {
@@ -65,17 +93,19 @@ const MainPage: React.FC = () => {
             {
               hrn: "Generated Video",
               type: "video/mp4",
-              url: `http://localhost:8000/videos/${videoPath}`, // Construct the full URL to the video
+              url: `http://localhost:8000/videos/${videoPath}`,
             },
           ],
         },
       };
+
       setVideoSrc(vodSource);
     } catch (error) {
       console.error("Error:", error);
       alert("Failed to load the video. Please try again.");
     } finally {
       setIsLoading(false);
+      setLoadingStage(1); // Reset the loading stage
     }
   };
 
@@ -267,7 +297,88 @@ const MainPage: React.FC = () => {
               </Player.Controls>
             </Player.Container>
           </Player.Root>
-        ) : null}
+        ) : (
+          isLoading && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "left",
+                justifyContent: "left",
+                gap: 3,
+                color: "#ffffff",
+              }}
+            >
+              {/* Progress Indicators */}
+              {stages.map((stage, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    opacity: 1,
+                    transition: "opacity 0.5s ease-in-out",
+                  }}
+                >
+                  {loadingStage > index + 1 ? (
+                    <CheckCircleIcon
+                      sx={{
+                        color: "#0aa363",
+                        fontSize: 32,
+                        zIndex: 1,
+                        boxShadow: "0 0 10px rgba(76, 175, 80, 0.5)",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  ) : loadingStage === index + 1 ? (
+                    <CircularProgress size={24} sx={{ color: "#03A9F4" }} />
+                  ) : (
+                    <CircularProgress
+                      size={24}
+                      sx={{ color: "rgba(255, 255, 255, 0.3)" }}
+                      variant="determinate"
+                      value={0}
+                    />
+                  )}
+                  <Typography
+                    sx={{
+                      fontSize: "1.2rem",
+                      color:
+                        loadingStage >= index + 1
+                          ? "#ffffff"
+                          : "rgba(255, 255, 255, 0.5)",
+                    }}
+                  >
+                    {stage.label}
+                  </Typography>
+                </Box>
+              ))}
+
+              {/* Progress Bar */}
+              <Box
+                sx={{
+                  position: "relative",
+                  height: "8px",
+                  width: "80%",
+                  borderRadius: "4px",
+                  background: "rgba(255, 255, 255, 0.2)",
+                  overflow: "hidden",
+                  marginTop: "20px",
+                }}
+              >
+                <Box
+                  sx={{
+                    height: "100%",
+                    width: `${loadingStage * 25}%`,
+                    background: "linear-gradient(90deg, #06b6d4, #3b82f6)",
+                    transition: "width 0.5s ease-in-out",
+                  }}
+                />
+              </Box>
+            </Box>
+          )
+        )}
       </Paper>
     </Box>
   );
