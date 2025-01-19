@@ -225,27 +225,26 @@ const MainPage: React.FC = () => {
             }}
           >
             What would you like to get explained?
-            
           </Typography>
-          {!videoSrc &&(
-          <Box sx={{ textAlign: "left" }}>
-            <Typography
-              sx={{
-                color: "rgba(255, 255, 255, 0.5)",
-              }}
-            >
-              - I can generate a visualization and explanation in any language
-            </Typography>
-            <Typography
-              sx={{
-                color: "rgba(255, 255, 255, 0.5)",
-                marginBottom: 1,
-              }}
-            >
-              - Ask me something like "Explain intuition behind vector addition
-              in Spanish"
-            </Typography>
-          </Box>
+          {!videoSrc && (
+            <Box sx={{ textAlign: "left" }}>
+              <Typography
+                sx={{
+                  color: "rgba(255, 255, 255, 0.5)",
+                }}
+              >
+                - I can generate a visualization and explanation in any language
+              </Typography>
+              <Typography
+                sx={{
+                  color: "rgba(255, 255, 255, 0.5)",
+                  marginBottom: 1,
+                }}
+              >
+                - Ask me something like "Explain intuition behind vector
+                addition in Spanish"
+              </Typography>
+            </Box>
           )}
           <Box
             sx={{
@@ -539,6 +538,7 @@ const MainPage: React.FC = () => {
             paddingRight: 6,
             height: "100%",
             overflowY: "auto",
+            maxHeight: "100vh",
             gap: 3,
           }}
         >
@@ -577,6 +577,7 @@ const MainPage: React.FC = () => {
                   position: "relative",
                   cursor: "pointer",
                   width: "100%",
+                  minHeight: "300px",
                   "&:hover": {
                     boxShadow: "0px 6px 12px rgba(0,0,0,0.5)",
                   },
